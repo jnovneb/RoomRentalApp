@@ -8,26 +8,32 @@ User Registration:
 
 Users can register either as a "Searchers" or "Advertisers".
 Searchers can provide preferences, such as needing a private bathroom, air conditioning, or specific conditions regarding shared housing.
-Listing Creation:
+
+## Listing Creation:
 
 Advertisers can create listings for rooms or apartments, including photos, descriptions, and pricing.
-Tinder-Like Swipe:
+
+## Tinder-Like Swipe:
 
 Searchers can swipe right if they like a listing or left if they don't.
 When a searcher likes a listing, a potential match is created.
-Chat:
+
+## Chat:
 
 Once a match is made, a basic chat system allows communication between the searcher and the advertiser.
-Tech Stack
-Frontend:
+
+## Tech Stack
+### Frontend:
 
 React.js for building the user interface.
 CSS for styling.
-Backend:
+
+### Backend:
 
 Flask (Python) for handling the API and business logic.
 SQLAlchemy to interact with an SQLite database for storing user data and listings.
-Database:
+
+## Database:
 
 SQLite is used to store user data, listings, and other information.
 Routes
@@ -40,56 +46,34 @@ How to Run the Application
 Follow these steps to get the project up and running on your local machine:
 
 1. Clone the repository
-bash
-Copiar
-Editar
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
 2. Set up the Backend (Flask API)
-Install dependencies:
-
+#### Install dependencies:
 Ensure you have Python installed, then install the required libraries:
-
-bash
-Copiar
-Editar
 pip install -r requirements.txt
-Set up the database:
-
+#### Set up the database:
 The first time you run the application, you need to create the database:
-
-bash
-Copiar
-Editar
 python app.py
 This will initialize the SQLite database.
 
-Run the Flask application:
+#### Run the Flask application:
 
 To start the backend server:
 
-bash
-Copiar
-Editar
 python app.py
 The Flask server should now be running on http://127.0.0.1:5000.
 
 3. Set up the Frontend (React App)
-Install dependencies:
+#### Install dependencies:
 
 Inside the frontend directory (e.g., frontend), run:
 
-bash
-Copiar
-Editar
 npm install
-Start the React application:
+#### Start the React application:
 
 To start the frontend server:
 
-bash
-Copiar
-Editar
 npm start
 The frontend should now be running on http://localhost:3000.
 
