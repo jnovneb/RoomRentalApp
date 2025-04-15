@@ -72,7 +72,7 @@ To start the frontend server:
 npm start
 The frontend should now be running on http://localhost:3000.
 
-4. Using the App
+3. Using the App
 Navigate to the frontend (http://localhost:3000).
 Register either as a "Searcher" or "Advertiser".
 As a "Searcher", you can set preferences and swipe on listings.
