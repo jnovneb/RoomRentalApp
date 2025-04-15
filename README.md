@@ -39,28 +39,16 @@ Routes
 How to Run the Application
 Follow these steps to get the project up and running on your local machine:
 
-1. Clone the repository
-bash
-Copiar
-Editar
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-2. Set up the Backend (Flask API)
+1. Set up the Backend (Flask API)
 Install dependencies:
 
 Ensure you have Python installed, then install the required libraries:
 
-bash
-Copiar
-Editar
 pip install -r requirements.txt
 Set up the database:
 
 The first time you run the application, you need to create the database:
 
-bash
-Copiar
-Editar
 python app.py
 This will initialize the SQLite database.
 
@@ -68,28 +56,19 @@ Run the Flask application:
 
 To start the backend server:
 
-bash
-Copiar
-Editar
 python app.py
 The Flask server should now be running on http://127.0.0.1:5000.
 
-3. Set up the Frontend (React App)
+2. Set up the Frontend (React App)
 Install dependencies:
 
 Inside the frontend directory (e.g., frontend), run:
 
-bash
-Copiar
-Editar
 npm install
 Start the React application:
 
 To start the frontend server:
 
-bash
-Copiar
-Editar
 npm start
 The frontend should now be running on http://localhost:3000.
 
