@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS  # Import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
 
@@ -21,6 +23,7 @@ class User(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
     user_type = db.Column(db.String(20), nullable=False)  # "searcher" or "advertiser"
     preferences = db.Column(db.JSON)
 
@@ -45,26 +48,37 @@ with app.app_context():
 
 @app.route('/register', methods=['POST'])
 def register():
-    """
-    Register a user as a searcher or advertiser.
-    """
     data = request.json
     username = data.get('username')
+    password = data.get('password')  # Nuevo
     user_type = data.get('type')
     preferences = data.get('preferences', {})
 
     if user_type not in ['searcher', 'advertiser']:
         return jsonify({"error": "Invalid user_type"}), 400
 
-    # Avoid repeated users
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "User already exists"}), 400
 
-    user = User(username=username, user_type=user_type, preferences=preferences)
+    hashed_password = generate_password_hash(password)
+    user = User(username=username, password=hashed_password, user_type=user_type, preferences=preferences)
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({"message": "User registered", "user": {"username": username, "type": user_type}}), 201
+    return jsonify({"message": "User registered"}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"error": "Invalid username or password"}), 401
+
+    return jsonify({"message": "Login successful", "user_type": user.user_type}), 200
 
 # ===============================
 # Advertisement paths

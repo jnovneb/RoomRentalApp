@@ -6,57 +6,86 @@ import './App.css';
 const App = () => {
   const [userType, setUserType] = useState('searcher');
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [listings, setListings] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [registered, setRegistered] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [isLoginMode, setIsLoginMode] = useState(false);
 
-  const handleRegister = async () => {
+  const handleAuth = async () => {
+    const endpoint = isLoginMode ? 'login' : 'register';
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      const response = await axios.post(`http://localhost:5000/${endpoint}`, {
         username,
+        password,
         type: userType,
       });
       alert(response.data.message);
-      setRegistered(true);
+      setAuthenticated(true);
     } catch (error) {
-      alert('Register error: ' + error.response.data.error);
+      const message =
+        error?.response?.data?.error || error.message || 'Unexpected error';
+      alert(`${isLoginMode ? 'Login' : 'Register'} error: ${message}`);
+      console.error(error);
     }
   };
 
   useEffect(() => {
     const fetchListings = async () => {
-      const response = await axios.get('http://localhost:5000/get_listings');
-      setListings(response.data);
+      try {
+        const response = await axios.get('http://localhost:5000/get_listings');
+        setListings(response.data);
+      } catch (err) {
+        console.error('Error fetching listings:', err);
+      }
     };
-    fetchListings();
-  }, []);
+    if (authenticated) {
+      fetchListings();
+    }
+  }, [authenticated]);
 
   const handleSwipe = async (direction) => {
     if (currentIndex < listings.length) {
-      await axios.post('http://localhost:5000/swipe', {
-        listing_id: currentIndex,
-        direction,
-      });
-      setCurrentIndex((prev) => prev + 1);
+      try {
+        await axios.post('http://localhost:5000/swipe', {
+          listing_id: listings[currentIndex].id,
+          direction,
+        });
+        setCurrentIndex((prev) => prev + 1);
+      } catch (err) {
+        console.error('Error sending swipe:', err);
+      }
     }
   };
 
   return (
     <div className="app-container">
-      {!registered ? (
+      {!authenticated ? (
         <div className="register-container">
-          <h1>Welcome to the renting portal!</h1>
+          <h1>{isLoginMode ? 'Login' : 'Register'} to RoomRentalApp</h1>
           <input
             type="text"
             placeholder="User name"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <select value={userType} onChange={(e) => setUserType(e.target.value)}>
             <option value="searcher">Searcher</option>
             <option value="advertiser">Advertiser</option>
           </select>
-          <button onClick={handleRegister}>Register</button>
+          <button onClick={handleAuth}>{isLoginMode ? 'Login' : 'Register'}</button>
+          <p>
+            {isLoginMode ? 'Don’t have an account?' : 'Already have an account?'}{' '}
+            <button onClick={() => setIsLoginMode(!isLoginMode)} className="toggle-button">
+              {isLoginMode ? 'Switch to Register' : 'Switch to Login'}
+            </button>
+          </p>
         </div>
       ) : (
         <div className="listings-container">
@@ -75,10 +104,9 @@ const App = () => {
               {listings[currentIndex].photos.map((photo, index) => (
                 <img key={index} src={photo} alt={`Imagen ${index + 1}`} className="listing-image" />
               ))}
-
               <div className="swipe-buttons">
                 <button className="swipe-left" onClick={() => handleSwipe('left')}>
-                  ❌ I don´t like it
+                  ❌ I don’t like it
                 </button>
                 <button className="swipe-right" onClick={() => handleSwipe('right')}>
                   ✅ I like it
