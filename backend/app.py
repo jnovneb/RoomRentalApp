@@ -4,6 +4,7 @@ from flask_cors import CORS  # Import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+
 app = Flask(__name__)
 
 # Enable CORS only for requests from the frontend (running on port 8080)
@@ -37,7 +38,15 @@ class Listing(db.Model):
     price = db.Column(db.Float, nullable=False)
     photos = db.Column(db.JSON)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # Nuevos campos añadidos
+    numBedrooms = db.Column(db.Integer, nullable=False)
+    numBathrooms = db.Column(db.Integer, nullable=False)
+    extras = db.Column(db.String(255), nullable=True)  # Puede ser una lista de extras como texto
+    address = db.Column(db.String(255), nullable=False)
 
+    # Relación con el modelo User (suponiendo que ya tienes un modelo User)
+    owner = db.relationship('User', backref='listings', lazy=True)
 # Create tables in the DB if they don´t exist
 with app.app_context():
     db.create_all()

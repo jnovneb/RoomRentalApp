@@ -11,6 +11,16 @@ const App = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [authenticated, setAuthenticated] = useState(false);
   const [isLoginMode, setIsLoginMode] = useState(false);
+  const [showForm, setShowForm] = useState(false); // Estado para mostrar/ocultar el formulario de anuncio
+  const [adDetails, setAdDetails] = useState({
+    title: '',
+    description: '',
+    numBedrooms: '',
+    numBathrooms: '',
+    extras: '',
+    address: '',
+    photos: [],
+  });
 
   const handleAuth = async () => {
     const endpoint = isLoginMode ? 'login' : 'register';
@@ -22,6 +32,7 @@ const App = () => {
       });
       alert(response.data.message);
       setAuthenticated(true);
+      setUserType(userType); // Guardar el tipo de usuario autenticado
     } catch (error) {
       const message =
         error?.response?.data?.error || error.message || 'Unexpected error';
@@ -55,6 +66,47 @@ const App = () => {
       } catch (err) {
         console.error('Error sending swipe:', err);
       }
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setAdDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setAdDetails((prevDetails) => ({
+      ...prevDetails,
+      photos: files,
+    }));
+  };
+
+  const handleSubmitAd = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('title', adDetails.title);
+      formData.append('description', adDetails.description);
+      formData.append('numBedrooms', adDetails.numBedrooms);
+      formData.append('numBathrooms', adDetails.numBathrooms);
+      formData.append('extras', adDetails.extras);
+      formData.append('address', adDetails.address);
+      adDetails.photos.forEach((file, index) => {
+        formData.append(`photos[${index}]`, file);
+      });
+      formData.append('owner_id', 1); // Aquí deberías pasar el `user_id` autenticado
+
+      const response = await axios.post('http://localhost:5000/add_advertisement', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      alert(response.data.message);
+      setShowForm(false); // Cerrar el formulario después de enviar
+    } catch (err) {
+      console.error('Error submitting advertisement:', err);
+      alert('Error submitting advertisement');
     }
   };
 
@@ -115,6 +167,74 @@ const App = () => {
             </motion.div>
           ) : (
             <h2>No more advertisements available</h2>
+          )}
+
+          {/* Botón solo para advertisers */}
+          {userType === 'advertiser' && (
+            <div className="add-advertisement-container">
+              <button
+                className="add-ad-button"
+                onClick={() => setShowForm(true)} // Muestra el formulario al hacer clic
+              >
+                ➕ Add Advertisement
+              </button>
+            </div>
+          )}
+
+          {/* Formulario de anuncios */}
+          {showForm && (
+            <div className="ad-form-container">
+              <h3>Fill out the advertisement details</h3>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={adDetails.title}
+                onChange={handleInputChange}
+              />
+              <textarea
+                name="description"
+                placeholder="Description (num bedrooms, num bathrooms, extras)"
+                value={adDetails.description}
+                onChange={handleInputChange}
+              />
+              <input
+                type="number"
+                name="numBedrooms"
+                placeholder="Number of bedrooms"
+                value={adDetails.numBedrooms}
+                onChange={handleInputChange}
+              />
+              <input
+                type="number"
+                name="numBathrooms"
+                placeholder="Number of bathrooms"
+                value={adDetails.numBathrooms}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="extras"
+                placeholder="Extras"
+                value={adDetails.extras}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={adDetails.address}
+                onChange={handleInputChange}
+              />
+              <input
+                type="file"
+                name="photos"
+                multiple
+                onChange={handleFileChange}
+              />
+              <button onClick={handleSubmitAd}>Submit Advertisement</button>
+              <button onClick={() => setShowForm(false)}>Cancel</button>
+            </div>
           )}
         </div>
       )}

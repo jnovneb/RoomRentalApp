@@ -65,3 +65,23 @@
   
   .swipe-left { background: #f44336; }
   .swipe-right { background: #4caf50; }
+
+  .add-advertisement-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .add-ad-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .add-ad-button:hover {
+    background-color: #0056b3;
+  }
+  
