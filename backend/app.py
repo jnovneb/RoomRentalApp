@@ -1,21 +1,23 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
-CORS(app)
+
+# Enable CORS only for requests from the frontend (running on port 8080)
+CORS(app, resources={r"/*": {"origins": "http://localhost:8080"}})  # Adjust this URL if needed
 
 # Setting up database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///room_rental.db'
 db = SQLAlchemy(app)
 
 # ===============================
-# Defininf models
+# Defining models
 # ===============================
 
 class User(db.Model):
     """
-    User model: they can be searchers or advertiser.
+    User model: they can be searchers or advertisers.
     """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -54,9 +56,9 @@ def register():
     if user_type not in ['searcher', 'advertiser']:
         return jsonify({"error": "Invalid user_type"}), 400
 
-    # Avoid repited users
+    # Avoid repeated users
     if User.query.filter_by(username=username).first():
-        return jsonify({"error": "User already exist"}), 400
+        return jsonify({"error": "User already exists"}), 400
 
     user = User(username=username, user_type=user_type, preferences=preferences)
     db.session.add(user)
@@ -106,17 +108,17 @@ def get_listings():
 @app.route('/swipe', methods=['POST'])
 def swipe():
     """
-    Searcher slides right/left depending if he likes the advertisement or not.
+    Searcher slides right/left depending if they like the advertisement or not.
     """
     data = request.json
     listing_id = data.get('listing_id')
     direction = data.get('direction')
 
     if direction not in ['left', 'right']:
-        return jsonify({"error": "Not valid direction"}), 400
+        return jsonify({"error": "Invalid direction"}), 400
 
     if direction == 'right':
-        return jsonify({"message": "Potential match! Waiting advertiser..."}), 200
+        return jsonify({"message": "Potential match! Waiting for advertiser..."}), 200
     else:
         return jsonify({"message": "Keep sliding"}), 200
 
@@ -127,7 +129,7 @@ def swipe():
 @app.route('/chat', methods=['POST'])
 def chat():
     """
-    Allows two users to chat, only if there was a match before
+    Allows two users to chat, only if there was a match before.
     """
     data = request.json
     sender = data.get('sender')
@@ -140,7 +142,7 @@ def chat():
     return jsonify({"message": f"{sender} says to {receiver}: {message}"}), 200
 
 # ===============================
-#  Root path to check server status
+# Root path to check server status
 # ===============================
 
 @app.route('/', methods=['GET'])
@@ -151,4 +153,4 @@ def home():
 # Launch Flask app
 # ===============================
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

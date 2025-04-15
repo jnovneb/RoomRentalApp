@@ -1,41 +1,69 @@
-# RoomRentalApp
+RoomRentalApp
 This project is a web application for people who are looking to rent rooms or apartments in Spain. It allows two types of users:
 
-Searchers (Buscador) - Users looking for a room or apartment.
-Advertisers (Anunciante) - Users who want to publish their rooms or apartments for rent.
+Searchers – Users looking for a room or apartment.
+
+Advertisers – Users who want to publish their rooms or apartments for rent.
+
 Features
 User Registration:
+Users can register either as a "Searcher" or "Advertiser".
 
-Users can register either as a "Searchers" or "Advertisers".
-Searchers can provide preferences, such as needing a private bathroom, air conditioning, or specific conditions regarding shared housing.
+Searchers can provide preferences such as needing a private bathroom, air conditioning, or specific conditions regarding shared housing. These preferences are saved and can be used to filter potential listings.
+
+Advertisers can provide their details and preferences for the listings they create.
+
 Listing Creation:
+Advertisers can create listings for rooms or apartments. This includes:
 
-Advertisers can create listings for rooms or apartments, including photos, descriptions, and pricing.
+Title and description of the listing.
+
+Price and photos.
+
+The system will ensure that only advertisers can create listings.
+
 Tinder-Like Swipe:
-
 Searchers can swipe right if they like a listing or left if they don't.
-When a searcher likes a listing, a potential match is created.
-Chat:
 
-Once a match is made, a basic chat system allows communication between the searcher and the advertiser.
+When a searcher swipes right, a potential match is created, signaling to the advertiser that the searcher is interested in their listing.
+
+This interaction is logged, allowing users to make decisions based on past activity.
+
+Chat:
+Once a match is made between a Searcher and Advertiser, a basic chat system allows them to communicate.
+
+Messages are exchanged between users who have previously matched.
+
+The chat system ensures that users can only communicate if a match exists, enforcing relevant privacy rules.
+
 Tech Stack
 Frontend:
 
 React.js for building the user interface.
+
 CSS for styling.
+
 Backend:
 
 Flask (Python) for handling the API and business logic.
-SQLAlchemy to interact with an SQLite database for storing user data and listings.
+
+SQLAlchemy for managing the database.
+
 Database:
 
-SQLite is used to store user data, listings, and other information.
+SQLite is used to store user data, listings, preferences, and chats.
+
 Routes
-/register [POST]: Register a user (either a "Searcher" or "Advertiser").
-/create_listing [POST]: Create a listing for a room or apartment (only for advertisers).
-/get_listings [GET]: Fetch all listings from the database.
+/register [POST]: Register a user as a "Searcher" or "Advertiser".
+
+/create_listing [POST]: Advertisers can create a listing for a room or apartment.
+
+/get_listings [GET]: Fetch all available listings.
+
 /swipe [POST]: Searchers can swipe left or right on listings.
-/chat [POST]: A basic chat between matched users.
+
+/chat [POST]: A basic chat functionality between matched users.
+
 How to Run the Application
 Follow these steps to get the project up and running on your local machine:
 
@@ -50,7 +78,7 @@ Set up the database:
 The first time you run the application, you need to create the database:
 
 python app.py
-This will initialize the SQLite database.
+This will initialize the SQLite database with user and listing tables.
 
 Run the Flask application:
 
@@ -74,20 +102,14 @@ The frontend should now be running on http://localhost:3000.
 
 3. Using the App
 Navigate to the frontend (http://localhost:3000).
+
 Register either as a "Searcher" or "Advertiser".
-As a "Searcher", you can set preferences and swipe on listings.
-As an "Advertiser", you can create listings for rooms or apartments.
-Matches will allow you to initiate a basic chat with the other user.
+
+Searchers can set preferences (like a private bathroom, air conditioning, etc.) and swipe on listings.
+
+Advertisers can create listings for rooms or apartments.
+
+Matches will allow you to initiate a basic chat with the other user once both have liked each other's listings.
+
 License
-This project is open source and licensed under the MIT License.
-
-Dependencies:
-Backend (Flask):
-
-Flask
-Flask-SQLAlchemy
-Frontend (React):
-
-React
-React-DOM
-Axios (for making HTTP requests)
+This project is open-source and licensed under the MIT License.
